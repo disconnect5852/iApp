@@ -18,6 +18,7 @@ import com.tsanyi.iApp.db.entity.Email;
 import com.tsanyi.iApp.db.entity.User;
 import com.tsanyi.iApp.db.repository.UserRepository;
 
+//Service impl and GUI things should be in different projects, the only common should be the interfaces for services, but... this is just a test
 @Service
 public class UserService {
 	protected Logger log = LoggerFactory.getLogger(this.getClass());

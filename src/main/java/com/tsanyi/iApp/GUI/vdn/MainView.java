@@ -1,6 +1,7 @@
 package com.tsanyi.iApp.GUI.vdn;
 
-import java.sql.Date;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,7 +46,7 @@ public class MainView extends VerticalLayout {
 		var menuBar = new MenuBar();
 
 		menuBar.addItem("New user", e -> add(createUserDialog()));
-		menuBar.addItem("About", e -> new Notification("Nem olyan jó ez a vaadin. Összeugrik, nem látszik, pixelvékony, stb", 10000).open());
+		menuBar.addItem("About", e -> new Notification("Nem olyan jó ez a vaadin. Összeugrik, nem látszik, pixelvékony, stb...", 10000).open());
 		appLayout.addToNavbar(menuBar);
 		var btn = new Button("List users");
 		btn.setSizeFull();
@@ -68,34 +69,37 @@ public class MainView extends VerticalLayout {
 		var hlayout = new HorizontalLayout();
 		var vlayout = new VerticalLayout(hlayout);
 		var dialog = new Dialog(vlayout);
-		var userDto = new UserDTO();
-		var cancelbtn = new Button("Cancel", e -> dialog.close());
-		var name = new TextField("Name");
-		var birth = new DatePicker("Birth date");
-		var email = new TextField("Email");
+		var newUserDto = new UserDTO();
+		var nameField = new TextField("Name");
+		var birthField = new DatePicker("Birth date");
+		var emailField = new TextField("Email");
 		var addmail = new Button("Add email", e -> {
-			userDto.getEmails().add(email.getValue());
-			email.clear();
+			newUserDto.getEmails().add(emailField.getValue());
+			emailField.clear();
 		});
 		var submitbtn = new Button("Add", e -> {
-			userDto.setName(name.getValue());
-			userDto.setBirthDate(Date.valueOf(birth.getValue()));
-			var messages= usrService.createUser(userDto);
+			//validation could (also) happen here, but that's complicated for a simple test...
+			newUserDto.setName(nameField.getValue());
+			newUserDto.setBirthDate(Date.from(birthField.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+			var messages= usrService.createUser(newUserDto);
 			messages.forEach(msg -> new Notification(msg, 5000).open());
-			log.debug(userDto.toString()+" messages:"+messages.size());
+			log.debug(newUserDto.toString()+" messages:"+messages.size());
 			dialog.close();
 		});
-		var div = new HorizontalLayout(submitbtn, cancelbtn);
-		div.setWidthFull();
-		vlayout.add(div);
-		hlayout.add(name, birth, email, addmail);
+		var horizontalBtnLayout = new HorizontalLayout(submitbtn, new Button("Cancel", e -> dialog.close()));
+		horizontalBtnLayout.setWidthFull();
+		vlayout.add(horizontalBtnLayout);
+		hlayout.add(nameField, birthField, emailField, addmail);
 		dialog.open();
 		return dialog;
 	}
 
 	private List<UserDTO> listUsers() {
 		var users = usrService.getAllUsers();
-		log.debug(users.stream().map(user -> user.toString()).collect(Collectors.joining(";", "{", "}")));
+		log.debug(users.stream().map(
+				user -> user.toString()).
+				collect(Collectors.joining(";", "{", "}"))
+				);
 		return users;
 	}
 }
