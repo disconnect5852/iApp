@@ -19,4 +19,4 @@ Use of application if simple:
 5. Click on "Add" button to commit
 
 PS: it seems in java world you can choose only from bad frontend frameworks. From the bad frontend frameworks, the best should be chosen at the time for the task...
-JSF, Swing is outdated, GWT is discontinued, Vaadin isn't so good too, javaFX needs runtimes(lol?), Angular is hyped for now (but GWT was hype too, until Google cut the development...)
+JSF, Swing is outdated, GWT is discontinued, Vaadin isn't so good too, javaFX needs runtime env to be installed(lol?), Angular is hyped for now (but GWT was hype too, until Google cut the development...)
